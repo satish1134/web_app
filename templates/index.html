@@ -24,6 +24,8 @@
         /* Add styles for navigation menu */
         .navbar {
             background-color: #333; /* Dark background color */
+            max-width: 800px; /* Limit the width */
+            margin: 0 auto; /* Center the navbar */
         }
         .navbar-brand, .navbar-nav .nav-link {
             color: white; /* White text color */
@@ -46,6 +48,7 @@
             border-radius: 5px;
             padding: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+            position: relative; /* Ensure relative positioning */
         }
         /* Green color for success */
         .subjectAreaBox.success {
@@ -54,6 +57,21 @@
         /* Red color for failure */
         .subjectAreaBox.failed {
             background-color: #FF4136;
+        }
+        /* Add margin between navbar and subject area boxes */
+        .container {
+            margin-top: 20px;
+        }
+        /* Styles for the button */
+        .open-popup {
+            color: white;
+            background-color: rosybrown;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute; /* Position the button */
+            top: 10px; /* Adjust top position */
+            right: 10px; /* Adjust right position */
         }
     </style>
     <script>
@@ -64,6 +82,14 @@
                     var popup = window.open('', '', 'width=600,height=400');
                     popup.document.body.innerHTML = '<h1>DAG Status for ' + subjectArea + '</h1>' + data;
                     // Inject CSS styles into the popup window
+                    popup.document.head.innerHTML += `
+                        <style>
+                            body {
+                                background-image: none !important; /* Remove background image */
+                                background-color: #fff; /* Set background color to white */
+                            }
+                        </style>
+                    `;
                     popup.document.head.innerHTML += '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">';
                     popup.document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="/static/styles.css">';
                 })
