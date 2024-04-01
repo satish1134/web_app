@@ -1,17 +1,17 @@
 /* Subject area box */
 .subjectAreaBox {
     margin-bottom: 20px;
-    border: 2px solid #ccc; /* Increase border width */
+    border: 10px solid #3a17d7; /* Increase border width */
     padding: 10px; /* Add padding */
     background-color: #a53232; /* Add background color */
     color: black; /* Text color */
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow effect */
+    box-shadow: 2px 2px 4px rgba(156, 44, 44, 0.1); /* Add subtle shadow effect */
 }
 
 /* ">" icon */
 .open-popup {
     color: white; /* Change color to white */
-    background-color: rosybrown; /* Background color for the icon box */
+    background-color: rgb(145, 7, 103); /* Background color for the icon box */
     cursor: pointer; /* Add cursor pointer */
     padding: 5px 10px; /* Add padding */
     border-radius: 5px; /* Add border radius */

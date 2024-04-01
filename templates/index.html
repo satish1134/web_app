@@ -4,74 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject Areas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> <!-- Font Awesome -->
+    <!-- Material Design Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
     <style>
-        /* Add CSS styles for table */
-        table {
-            border-collapse: collapse;
-            width: 100%;
+        /* Add custom styles */
+        /* Make space between navbar and subject area box */
+        .container {
+            margin-top: 20px; /* Adjust the margin-top as needed */
         }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        /* Add styles for navigation menu */
-        .navbar {
-            background-color: #333; /* Dark background color */
-            max-width: 800px; /* Limit the width */
-            margin: 0 auto; /* Center the navbar */
-        }
-        .navbar-brand, .navbar-nav .nav-link {
-            color: white; /* White text color */
-        }
-        .navbar-nav .nav-link:hover {
-            color: #007bff; /* Change color on hover */
-        }
-        /* Color for navbar toggler icon */
-        .navbar-toggler-icon {
-            background-color: white;
-        }
-        /* Margin for navbar links */
-        .navbar-nav .nav-link {
-            margin-right: 10px; /* Add margin between links */
-        }
-
-        /* Custom styles for subject area boxes */
-        .subjectAreaBox {
-            margin-bottom: 20px;
-            border-radius: 5px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
-            position: relative; /* Ensure relative positioning */
+        /* Center the button inside the subject area box */
+        .open-popup {
+            margin: 0 auto; /* Center the button */
+            display: block; /* Make it a block element */
         }
         /* Green color for success */
-        .subjectAreaBox.success {
-            background-color: #3D9970;
+        .success {
+            background-color: #00c851 !important; /* Green color */
         }
         /* Red color for failure */
-        .subjectAreaBox.failed {
-            background-color: #FF4136;
+        .failed {
+            background-color: #ff4444 !important; /* Red color */
         }
-        /* Add margin between navbar and subject area boxes */
-        .container {
-            margin-top: 20px;
+        /* Custom table styles */
+        .table-container {
+            max-height: 300px;
+            overflow-y: auto;
         }
-        /* Styles for the button */
-        .open-popup {
-            color: white;
-            background-color: rosybrown;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 5px;
-            position: absolute; /* Position the button */
-            top: 10px; /* Adjust top position */
-            right: 10px; /* Adjust right position */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000; /* Set border color to dark black */
+        }
+        .table th, .table td {
+            border: 2px solid #000; /* Border color and thickness */
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f8f9fa; /* Table header background color */
+            font-weight: bold; /* Make table header bold */
         }
     </style>
     <script>
@@ -80,18 +53,32 @@
                 .then(response => response.text())
                 .then(data => {
                     var popup = window.open('', '', 'width=600,height=400');
-                    popup.document.body.innerHTML = '<h1>DAG Status for ' + subjectArea + '</h1>' + data;
-                    // Inject CSS styles into the popup window
+                    popup.document.body.innerHTML = `
+                        <h1>DAG Status for ${subjectArea}</h1>
+                        <div class="table-container">
+                            <table class="table">
+                                ${data}
+                            </table>
+                        </div>
+                    `;
+                    // Inject Material Design Bootstrap CSS into the popup window
                     popup.document.head.innerHTML += `
+                        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
                         <style>
                             body {
-                                background-image: none !important; /* Remove background image */
-                                background-color: #fff; /* Set background color to white */
+                                background-color: #fff;
+                            }
+                            .table th, .table td {
+                                border: 2px solid #000; /* Border color and thickness */
+                                padding: 8px;
+                                text-align: left;
+                            }
+                            .table th {
+                                background-color: #f8f9fa; /* Table header background color */
+                                font-weight: bold; /* Make table header bold */
                             }
                         </style>
                     `;
-                    popup.document.head.innerHTML += '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">';
-                    popup.document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="/static/styles.css">';
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -99,17 +86,18 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
+<!-- Navbar using Material Design Bootstrap -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
         <!-- Icon or Styled Text -->
         <a class="navbar-brand" href="#"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
         <!-- Toggler Button -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <!-- Menu Items -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <!-- Home -->
                 <li class="nav-item">
                     <a class="nav-link" href="#">Home</a>
@@ -125,18 +113,17 @@
 
 <div class="container">
     <div class="row">
+        <!-- Loop through subject areas -->
         {% for subject_area, data in grouped_data.items() %}
             <div class="col-md-4">
-                {% if data_status[subject_area] == 'success' %}
-                    <div class="subjectAreaBox success">
-                {% elif data_status[subject_area] == 'failed' %}
-                    <div class="subjectAreaBox failed">
-                {% else %}
-                    <div class="subjectAreaBox">
-                {% endif %}
-                    <h3>{{ subject_area }} ({{ data|length }})</h3> <!-- Display the total count of DAGs -->
-                    <p>Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
-                    <button class="open-popup" onclick="showDagStatus('{{ subject_area }}')">></button>
+                <!-- Subject Area Box using Material Design Bootstrap -->
+                <div class="card mb-4 {% if data_status[subject_area] == 'success' %} success {% elif data_status[subject_area] == 'failed' %} failed {% endif %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ subject_area }}</h5>
+                        <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
+                        <!-- Button to launch popup -->
+                        <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')">&gt;</button>
+                    </div>
                 </div>
             </div>
         {% endfor %}
