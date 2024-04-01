@@ -1,0 +1,62 @@
+/* styles.css */
+
+/* Subject area box */
+.subjectAreaBox {
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Add border */
+    padding: 10px; /* Add padding */
+    background-color: #f9f9f9; /* Add background color */
+}
+
+/* ">" icon */
+.open-popup {
+    color: blue; /* Change color to blue */
+    cursor: pointer; /* Add cursor pointer */
+    float: right; /* Float to the right */
+}
+
+/* Popup */
+.popup {
+    width: 600px; /* Set width */
+    height: 400px; /* Set height */
+    background-color: white; /* Add background color */
+    border: 1px solid #ccc; /* Add border */
+    padding: 20px; /* Add padding */
+    position: fixed; /* Position fixed */
+    top: 50%; /* Align to center vertically */
+    left: 50%; /* Align to center horizontally */
+    transform: translate(-50%, -50%); /* Center align */
+    z-index: 9999; /* Set z-index */
+    overflow-y: auto; /* Add vertical scroll if content exceeds height */
+}
+
+/* Close button */
+.close-btn {
+    position: absolute; /* Position absolute */
+    top: 10px; /* Align to top */
+    right: 10px; /* Align to right */
+    cursor: pointer; /* Add cursor pointer */
+}
+
+/* Table styling */
+.table {
+    width: 100%; /* Set table width */
+    border-collapse: collapse; /* Collapse table borders */
+}
+
+.table th,
+.table td {
+    border: 1px solid #ccc; /* Add table cell border */
+    padding: 8px; /* Add padding */
+}
+
+/* Table header styling */
+.table th {
+    background-color: #f2f2f2; /* Add background color */
+    text-align: left; /* Align text left */
+}
+
+/* Table row hover effect */
+.table tbody tr:hover {
+    background-color: #f0f0f0; /* Add hover background color */
+}
