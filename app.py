@@ -1,30 +1,27 @@
-from flask import Flask, make_response, request
+from flask import Flask, render_template, request
 import os
 from data_processing import parse_csv_file, group_by_subject_area
-from html_generation import generate_html_for_subject_areas
 
 app = Flask(__name__, static_url_path='/static')
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-print("Flask application directory:", current_directory)
 
 @app.route('/')
 def index():
     csv_file_path = os.path.join(current_directory, 'data.csv')
     parsed_data = parse_csv_file(csv_file_path)
     grouped_data = group_by_subject_area(parsed_data)
-    html_content = generate_html_for_subject_areas(grouped_data)
     
-    response = make_response(html_content)
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    
-    return response
+    # Render the index.html template with the processed data
+    return render_template('index.html', grouped_data=grouped_data)
 
 @app.route('/dag_status')
 def dag_status():
     subject_area = request.args.get('subject_area')
+    
+    if subject_area is None:
+        # If subject_area is not provided, return an error response
+        return 'Error: No subject area provided', 400
     
     # Read data from the CSV file and filter by the subject area
     csv_file_path = os.path.join(current_directory, 'data.csv')

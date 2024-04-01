@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Areas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <style>
+        /* Add CSS styles for table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        function showDagStatus(subjectArea) {
+            fetch(`/dag_status?subject_area=${subjectArea}`)
+                .then(response => response.text())
+                .then(data => {
+                    var popup = window.open('', '', 'width=600,height=400');
+                    popup.document.body.innerHTML = '<h1>DAG Status for ' + subjectArea + '</h1>' + data;
+                    // Inject CSS styles into the popup window
+                    popup.document.head.innerHTML += '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">';
+                    popup.document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="/static/styles.css">';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        {% for subject_area, data in grouped_data.items() %}
+            <div class="col-md-4">
+                <div class="subjectAreaBox">
+                    <h3>{{ subject_area }}</h3>
+                    <p>Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
+                    <button class="open-popup" onclick="showDagStatus('{{ subject_area }}')">></button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
