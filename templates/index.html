@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subject Areas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css" href="/static/styles.css">
     <style>
         /* Add CSS styles for table */
@@ -30,6 +31,30 @@
         .navbar-nav .nav-link:hover {
             color: #007bff; /* Change color on hover */
         }
+        /* Color for navbar toggler icon */
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+        /* Margin for navbar links */
+        .navbar-nav .nav-link {
+            margin-right: 10px; /* Add margin between links */
+        }
+
+        /* Custom styles for subject area boxes */
+        .subjectAreaBox {
+            margin-bottom: 20px;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+        }
+        /* Green color for success */
+        .subjectAreaBox.success {
+            background-color: #3D9970;
+        }
+        /* Red color for failure */
+        .subjectAreaBox.failed {
+            background-color: #FF4136;
+        }
     </style>
     <script>
         function showDagStatus(subjectArea) {
@@ -50,15 +75,22 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Home</a>
+        <!-- Icon or Styled Text -->
+        <a class="navbar-brand" href="#"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
+        <!-- Toggler Button -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
+        <!-- Menu Items -->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav ml-auto">
+                <!-- Home -->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About Us</a>
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <!-- About Us -->
+                <li class="nav-item">
+                    <a class="nav-link" href="about_us.html">About Us</a>
                 </li>
             </ul>
         </div>
@@ -69,8 +101,14 @@
     <div class="row">
         {% for subject_area, data in grouped_data.items() %}
             <div class="col-md-4">
-                <div class="subjectAreaBox">
-                    <h3>{{ subject_area }}</h3>
+                {% if data_status[subject_area] == 'success' %}
+                    <div class="subjectAreaBox success">
+                {% elif data_status[subject_area] == 'failed' %}
+                    <div class="subjectAreaBox failed">
+                {% else %}
+                    <div class="subjectAreaBox">
+                {% endif %}
+                    <h3>{{ subject_area }} ({{ data|length }})</h3> <!-- Display the total count of DAGs -->
                     <p>Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
                     <button class="open-popup" onclick="showDagStatus('{{ subject_area }}')">></button>
                 </div>

@@ -1,15 +1,20 @@
 /* Subject area box */
 .subjectAreaBox {
     margin-bottom: 20px;
-    border: 1px solid #ccc; /* Add border */
+    border: 2px solid #ccc; /* Increase border width */
     padding: 10px; /* Add padding */
-    background-color: #f9f9f9; /* Add background color */
+    background-color: #a53232; /* Add background color */
+    color: black; /* Text color */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow effect */
 }
 
 /* ">" icon */
 .open-popup {
-    color: blue; /* Change color to blue */
+    color: white; /* Change color to white */
+    background-color: rosybrown; /* Background color for the icon box */
     cursor: pointer; /* Add cursor pointer */
+    padding: 5px 10px; /* Add padding */
+    border-radius: 5px; /* Add border radius */
     float: right; /* Float to the right */
 }
 
@@ -44,7 +49,7 @@
 
 .table th,
 .table td {
-    border: 1px solid #ccc; /* Add table cell border */
+    border: 2px solid #ccc; /* Increase table cell border width */
     padding: 8px; /* Add padding */
 }
 
@@ -80,4 +85,13 @@
 /* Margin for navbar links */
 .navbar-nav .nav-link {
     margin-right: 10px; /* Add margin between links */
+}
+
+/* Background image */
+body {
+    background-image: url('/static/image/background.jpg'); /* Replace 'path/to/your/background-image.jpg' with the actual path to your background image */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #333;
 }

@@ -12,8 +12,26 @@ def index():
     parsed_data = parse_csv_file(csv_file_path)
     grouped_data = group_by_subject_area(parsed_data)
     
-    # Render the index.html template with the processed data
-    return render_template('index.html', grouped_data=grouped_data)
+    # Define data status
+    data_status = {}
+    for subject_area, data in grouped_data.items():
+        # Check if any DAG in failed status
+        if any(row['STATUS'].lower() != 'success' for row in data):
+            data_status[subject_area] = 'failed'
+        else:
+            data_status[subject_area] = 'success'
+
+        # Update data_status based on DAG count
+        if len(data) == 0:
+            data_status[subject_area] = 'empty'
+        elif len(data) != len([row for row in data if row['STATUS'].lower() == 'success']):
+            data_status[subject_area] = 'failed'
+        else:
+            data_status[subject_area] = 'success'
+    
+    # Render the index.html template with the processed data and data status
+    return render_template('index.html', grouped_data=grouped_data, data_status=data_status)
+
 
 @app.route('/dag_status')
 def dag_status():
@@ -37,6 +55,10 @@ def dag_status():
     html_content += "</tbody></table>"
     
     return html_content
+
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
