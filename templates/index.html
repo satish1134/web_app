@@ -37,16 +37,42 @@
         }
     </style>
     <script>
+        var popupWindow;
+
         function showDagStatus(subjectArea) {
             fetch(`/dag_status?subject_area=${subjectArea}`)
                 .then(response => response.text())
                 .then(data => {
-                    var popup = window.open('', '', 'width=600,height=400');
-                    popup.document.body.innerHTML = '<h1>DAG Status for ' + subjectArea + '</h1>' + data;
-                    // Inject Material Design Bootstrap CSS into the popup window
-                    popup.document.head.innerHTML += '<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">';
+                    // Open popup window maximized
+                    popupWindow = window.open('', '_blank', 'fullscreen=yes');
+                    popupWindow.document.write('<html><head><title>DAG Status for ' + subjectArea + '</title></head><body>');
+                    popupWindow.document.write('<h1>' + subjectArea + '</h1>' + data);
+                    // Add home icon for closing the popup window
+                    popupWindow.document.write('<button onclick="closePopup()"><i class="fas fa-home"></i></button>');
+                    popupWindow.document.write('</body></html>');
+                    popupWindow.document.close();
                 })
                 .catch(error => console.error('Error:', error));
+        }
+
+        function closePopup() {
+            if (popupWindow) {
+                popupWindow.close();
+            }
+        }
+
+        function filterSubjectArea() {
+            var selectedSubjectArea = document.getElementById("subjectAreaDropdown").value;
+            var subjectAreaCards = document.getElementsByClassName("subject-area-card");
+
+            for (var i = 0; i < subjectAreaCards.length; i++) {
+                var card = subjectAreaCards[i];
+                if (card.getAttribute("data-subject-area") === selectedSubjectArea || selectedSubjectArea === "all") {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            }
         }
     </script>
 </head>
@@ -77,18 +103,29 @@
     </div>
 </nav>
 
+<!-- Subject Area Dropdown -->
+<div class="container mt-3">
+    <label for="subjectAreaDropdown" class="form-label">Select Subject Area:</label>
+    <select class="form-select" id="subjectAreaDropdown" onchange="filterSubjectArea()">
+        <option value="all">All</option>
+        {% for subject_area, data in grouped_data.items() %}
+            <option value="{{ subject_area }}">{{ subject_area }}</option>
+        {% endfor %}
+    </select>
+</div>
+
 <div class="container">
     <div class="row">
         <!-- Loop through subject areas -->
         {% for subject_area, data in grouped_data.items() %}
-            <div class="col-md-4">
+            <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}" style="display: none;">
                 <!-- Subject Area Box using Material Design Bootstrap -->
                 <div class="card mb-4 {% if 'running' in data_status[subject_area] %} running {% elif data_status[subject_area] == 'failed' %} failed {% elif data_status[subject_area] == 'success' %} success {% endif %}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ subject_area }}</h5>
+                        <h5 class="card-title"><strong>{{ subject_area }}</strong></h5>
                         <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
                         <!-- Button to launch popup -->
-                        <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')">&gt;</button>
+                        <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
