@@ -27,24 +27,13 @@
         .failed {
             background-color: #ff4444 !important; /* Red color */
         }
-        /* Custom table styles */
-        .table-container {
-            max-height: 300px;
-            overflow-y: auto;
+        /* Yellow color for running */
+        .running {
+            background-color: #ffd600 !important; /* Yellow color */
         }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 2px solid #000; /* Set border color to dark black */
-        }
-        .table th, .table td {
-            border: 2px solid #000; /* Border color and thickness */
-            padding: 8px;
-            text-align: left;
-        }
-        .table th {
-            background-color: #f8f9fa; /* Table header background color */
-            font-weight: bold; /* Make table header bold */
+        /* Increase table border thickness */
+        .table-bordered {
+            border: 3px solid black !important; /* Adjust the thickness as needed */
         }
     </style>
     <script>
@@ -53,32 +42,9 @@
                 .then(response => response.text())
                 .then(data => {
                     var popup = window.open('', '', 'width=600,height=400');
-                    popup.document.body.innerHTML = `
-                        <h1>DAG Status for ${subjectArea}</h1>
-                        <div class="table-container">
-                            <table class="table">
-                                ${data}
-                            </table>
-                        </div>
-                    `;
+                    popup.document.body.innerHTML = '<h1>DAG Status for ' + subjectArea + '</h1>' + data;
                     // Inject Material Design Bootstrap CSS into the popup window
-                    popup.document.head.innerHTML += `
-                        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
-                        <style>
-                            body {
-                                background-color: #fff;
-                            }
-                            .table th, .table td {
-                                border: 2px solid #000; /* Border color and thickness */
-                                padding: 8px;
-                                text-align: left;
-                            }
-                            .table th {
-                                background-color: #f8f9fa; /* Table header background color */
-                                font-weight: bold; /* Make table header bold */
-                            }
-                        </style>
-                    `;
+                    popup.document.head.innerHTML += '<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">';
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -117,7 +83,7 @@
         {% for subject_area, data in grouped_data.items() %}
             <div class="col-md-4">
                 <!-- Subject Area Box using Material Design Bootstrap -->
-                <div class="card mb-4 {% if data_status[subject_area] == 'success' %} success {% elif data_status[subject_area] == 'failed' %} failed {% endif %}">
+                <div class="card mb-4 {% if 'running' in data_status[subject_area] %} running {% elif data_status[subject_area] == 'failed' %} failed {% elif data_status[subject_area] == 'success' %} success {% endif %}">
                     <div class="card-body">
                         <h5 class="card-title">{{ subject_area }}</h5>
                         <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>

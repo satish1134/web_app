@@ -15,16 +15,11 @@ def index():
     # Define data status
     data_status = {}
     for subject_area, data in grouped_data.items():
+        # Check if any DAG in running status
+        if any(row['STATUS'].lower() == 'running' for row in data):
+            data_status[subject_area] = 'running'
         # Check if any DAG in failed status
-        if any(row['STATUS'].lower() != 'success' for row in data):
-            data_status[subject_area] = 'failed'
-        else:
-            data_status[subject_area] = 'success'
-
-        # Update data_status based on DAG count
-        if len(data) == 0:
-            data_status[subject_area] = 'empty'
-        elif len(data) != len([row for row in data if row['STATUS'].lower() == 'success']):
+        elif any(row['STATUS'].lower() == 'failed' for row in data):
             data_status[subject_area] = 'failed'
         else:
             data_status[subject_area] = 'success'
@@ -47,14 +42,24 @@ def dag_status():
     dag_data = [row for row in parsed_data if row['SUBJECT_AREA'] == subject_area]
     
     # Generate HTML content for the DAG status data
-    html_content = "<table class='table'><thead><tr><th>DAG Name</th><th>Start Date</th><th>End Date</th><th>Elapsed Time</th><th>Status</th></tr></thead><tbody>"
+    html_content = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>DAG Status</title>"
+    html_content += "<link href='https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css' rel='stylesheet'></head><body>"
+    html_content += "<style>.table {border-collapse: separate; border-spacing: 0 10px; width: 100%;} .table th, .table td {border: 2px solid #000; padding: 8px;} .table th {background-color: #f2f2f2;}</style>"
+    html_content += "<table class='table'><thead><tr><th>DAG Name</th><th>Start Date</th><th>End Date</th><th>Elapsed Time</th><th>Status</th></tr></thead><tbody>"
     for dag in dag_data:
         # Set row color based on status
-        row_color = 'success' if dag['STATUS'].lower() == 'success' else 'danger'
+        row_color = ''
+        if dag['STATUS'].lower() == 'success':
+            row_color = 'table-success'
+        elif dag['STATUS'].lower() == 'failed':
+            row_color = 'table-danger'
+        elif dag['STATUS'].lower() == 'running':
+            row_color = 'table-warning'
         html_content += f"<tr class='{row_color}'><td>{dag['DAG_NAME']}</td><td>{dag['DAG_START_TIME']}</td><td>{dag['DAG_END_TIME']}</td><td>{dag['ELAPSED_TIME']}</td><td>{dag['STATUS']}</td></tr>"
-    html_content += "</tbody></table>"
+    html_content += "</tbody></table></body></html>"
     
     return html_content
+
 
 @app.route('/about_us')
 def about_us():
