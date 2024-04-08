@@ -38,6 +38,33 @@
     .table-bordered {
       border: 3px solid black !important; /* Adjust the thickness as needed */
     }
+    /* Soft UI Design */
+    .card {
+      background-color: #f0f3f5;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .latest-update {
+      background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-top: 20px;
+      color: #ffffff; /* Set text color to white */
+    }
+    /* Soft UI colors for navbar */
+    .navbar {
+      background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .navbar-nav .nav-link {
+      color: #ffffff; /* Set text color to white */
+      transition: color 0.3s ease; /* Smooth color transition */
+    }
+    .navbar-nav .nav-link:hover {
+      color: #cccccc; /* Change the text color on hover */
+    }
   </style>
 </head>
 <body>
@@ -94,7 +121,50 @@
   </div>
 </div>
 
-<!-- JavaScript code for fetching data and handling popup window -->
+<!-- Latest Update Section -->
+<div class="container mt-5">
+    <h2>Latest Update</h2>
+    <div class="latest-update">
+        <!-- Read latest update from file and display here -->
+        <div class="message-box">
+            {% for update in latest_updates %}
+                <p>{{ update }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Add custom styles */
+    /* Latest Update Section */
+    .latest-update {
+        background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        margin-top: 20px;
+        color: #ffffff; /* Set text color to white */
+        text-align: right; /* Align text to the right */
+    }
+    /* Message Box Style */
+    .message-box {
+        background-color: #f0f3f5; /* Light gray background */
+        border: 1px solid #ced4da; /* Gray border */
+        border-radius: 5px; /* Rounded corners */
+        padding: 10px; /* Padding */
+        margin: 0; /* Remove margin */
+        text-align: left; /* Align text to the left */
+        white-space: pre-line; /* Preserve line breaks */
+    }
+    .message-box p {
+        margin: 5px 0; /* Add spacing between messages */
+    }
+</style>
+
+
+
+
+
 <script>
   var popupWindow;
 

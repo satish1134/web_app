@@ -69,7 +69,7 @@
 
         // Check if username and password match the default values
         if (username === 'admin' && password === 'admin') {
-            alert('Login successful!'); // You can replace this with redirection to another page
+            window.location.href = '/add_update'; // Redirect to add_update page
         } else {
             alert('Invalid username or password. Please try again.');
         }
