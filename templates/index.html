@@ -1,137 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subject Areas</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> <!-- Font Awesome -->
-    <!-- Material Design Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
-    <style>
-        /* Add custom styles */
-        /* Make space between navbar and subject area box */
-        .container {
-            margin-top: 20px; /* Adjust the margin-top as needed */
-        }
-        /* Center the button inside the subject area box */
-        .open-popup {
-            margin: 0 auto; /* Center the button */
-            display: block; /* Make it a block element */
-        }
-        /* Green color for success */
-        .success {
-            background-color: #00c851 !important; /* Green color */
-        }
-        /* Red color for failure */
-        .failed {
-            background-color: #ff4444 !important; /* Red color */
-        }
-        /* Yellow color for running */
-        .running {
-            background-color: #ffd600 !important; /* Yellow color */
-        }
-        /* Increase table border thickness */
-        .table-bordered {
-            border: 3px solid black !important; /* Adjust the thickness as needed */
-        }
-    </style>
-    <script>
-        var popupWindow;
-
-        function showDagStatus(subjectArea) {
-            fetch(`/dag_status?subject_area=${subjectArea}`)
-                .then(response => response.text())
-                .then(data => {
-                    // Open popup window maximized
-                    popupWindow = window.open('', '_blank', 'fullscreen=yes');
-                    popupWindow.document.write('<html><head><title>DAG Status for ' + subjectArea + '</title></head><body>');
-                    popupWindow.document.write('<h1>' + subjectArea + '</h1>' + data);
-                    // Add home icon for closing the popup window
-                    popupWindow.document.write('<button onclick="closePopup()"><i class="fas fa-home"></i></button>');
-                    popupWindow.document.write('</body></html>');
-                    popupWindow.document.close();
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function closePopup() {
-            if (popupWindow) {
-                popupWindow.close();
-            }
-        }
-
-        function filterSubjectArea() {
-            var selectedSubjectArea = document.getElementById("subjectAreaDropdown").value;
-            var subjectAreaCards = document.getElementsByClassName("subject-area-card");
-
-            for (var i = 0; i < subjectAreaCards.length; i++) {
-                var card = subjectAreaCards[i];
-                if (card.getAttribute("data-subject-area") === selectedSubjectArea || selectedSubjectArea === "all") {
-                    card.style.display = "block";
-                } else {
-                    card.style.display = "none";
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject Areas</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/static/styles.css">
+  <!-- Include jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <!-- Include Bootstrap's JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <style>
+    /* Add custom styles */
+    /* Make space between navbar and subject area box */
+    .container {
+      margin-top: 20px; /* Adjust the margin-top as needed */
+    }
+    /* Center the button inside the subject area box */
+    .open-popup {
+      margin: 0 auto; /* Center the button */
+      display: block; /* Make it a block element */
+    }
+    /* Green color for success */
+    .success {
+      background-color: #00c851 !important; /* Green color */
+    }
+    /* Red color for failure */
+    .failed {
+      background-color: #ff4444 !important; /* Red color */
+    }
+    /* Yellow color for running */
+    .running {
+      background-color: #ffd600 !important; /* Yellow color */
+    }
+    /* Increase table border thickness */
+    .table-bordered {
+      border: 3px solid black !important; /* Adjust the thickness as needed */
+    }
+  </style>
 </head>
 <body>
 
-<!-- Navbar using Material Design Bootstrap -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-        <!-- Icon or Styled Text -->
-        <a class="navbar-brand" href="#"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
-        <!-- Toggler Button -->
-        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Menu Items -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- Home -->
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
-                </li>
-                <!-- About Us -->
-                <li class="nav-item">
-                    <a class="nav-link" href="about_us.html">About Us</a>
-                </li>
-            </ul>
-        </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
+    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <!-- Login -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
 
 <!-- Subject Area Dropdown -->
 <div class="container mt-3">
-    <label for="subjectAreaDropdown" class="form-label">Select Subject Area:</label>
-    <select class="form-select" id="subjectAreaDropdown" onchange="filterSubjectArea()">
-        <option value="all">All</option>
-        {% for subject_area, data in grouped_data.items() %}
-            <option value="{{ subject_area }}">{{ subject_area }}</option>
-        {% endfor %}
-    </select>
+  <label for="subjectAreaDropdown" class="form-label">Select Subject Area:</label>
+  <select class="form-select" id="subjectAreaDropdown" onchange="filterSubjectArea()">
+    <option value="choose" selected>Choose Subject Area</option>
+    <option value="all">All</option>
+    {% for subject_area, data in grouped_data.items() %}
+    <option value="{{ subject_area }}">{{ subject_area }}</option>
+    {% endfor %}
+  </select>
 </div>
 
+<!-- Main content area -->
 <div class="container">
-    <div class="row">
-        <!-- Loop through subject areas -->
-        {% for subject_area, data in grouped_data.items() %}
-            <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}" style="display: none;">
-                <!-- Subject Area Box using Material Design Bootstrap -->
-                <div class="card mb-4 {% if 'running' in data_status[subject_area] %} running {% elif data_status[subject_area] == 'failed' %} failed {% elif data_status[subject_area] == 'success' %} success {% endif %}">
-                    <div class="card-body">
-                        <h5 class="card-title"><strong>{{ subject_area }}</strong></h5>
-                        <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
-                        <!-- Button to launch popup -->
-                        <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+  <div class="row">
+    <!-- Loop through subject areas and display cards -->
+    {% for subject_area, data in grouped_data.items() %}
+    <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}" style="display: none;">
+      <!-- Subject Area Card -->
+      <div class="card mb-4 {% if 'running' in data_status[subject_area] %} running {% elif data_status[subject_area] == 'failed' %} failed {% elif data_status[subject_area] == 'success' %} success {% endif %}">
+        <div class="card-body">
+          <h5 class="card-title"><strong>{{ subject_area }}</strong></h5>
+          <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
+          <!-- Button to launch popup -->
+          <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
     </div>
+    {% endfor %}
+  </div>
 </div>
+
+<!-- JavaScript code for fetching data and handling popup window -->
+<script>
+  var popupWindow;
+
+  function showDagStatus(subjectArea) {
+    fetch(`/dag_status?subject_area=${subjectArea}`)
+      .then(response => response.text())
+      .then(data => {
+        // Open popup window maximized
+        popupWindow = window.open('', '_blank', 'fullscreen=yes');
+        popupWindow.document.write(data);
+        // Add home button for closing the popup window
+        popupWindow.document.write('<button onclick="window.close()">Home</button>');
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function closePopup() {
+    if (popupWindow) {
+      popupWindow.close();
+    }
+  }
+
+  function filterSubjectArea() {
+    var selectedSubjectArea = document.getElementById("subjectAreaDropdown").value;
+    var subjectAreaCards = document.getElementsByClassName("subject-area-card");
+
+    for (var i = 0; i < subjectAreaCards.length; i++) {
+      var card = subjectAreaCards[i];
+      if (card.getAttribute("data-subject-area") === selectedSubjectArea || selectedSubjectArea === "all") {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    }
+  }
+</script>
 
 </body>
 </html>
