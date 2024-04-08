@@ -123,12 +123,15 @@
 
 <!-- Latest Update Section -->
 <div class="container mt-5">
-    <h2>Latest Update</h2>
+    <h2 class="latest-update-heading">Latest Update</h2>
     <div class="latest-update">
         <!-- Read latest update from file and display here -->
         <div class="message-box">
             {% for update in latest_updates %}
-                <p>{{ update }}</p>
+                {% set update_list = update.split(',') %}
+                {% for item in update_list %}
+                    <p>{{ item }}</p>
+                {% endfor %}
             {% endfor %}
         </div>
     </div>
@@ -138,8 +141,8 @@
     /* Add custom styles */
     /* Latest Update Section */
     .latest-update {
-        background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
-        border-radius: 10px;
+        background: none;
+        border-radius: 0px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
         padding: 20px;
         margin-top: 20px;
@@ -148,20 +151,20 @@
     }
     /* Message Box Style */
     .message-box {
-        background-color: #f0f3f5; /* Light gray background */
-        border: 1px solid #ced4da; /* Gray border */
-        border-radius: 5px; /* Rounded corners */
+        background-color: #23c32e; /* Light gray background */
+        border: 0px solid #346da6; /* Gray border */
+        border-radius: 20px; /* Rounded corners */
         padding: 10px; /* Padding */
-        margin: 0; /* Remove margin */
+        margin: auto; /* Center the box horizontally */
         text-align: left; /* Align text to the left */
-        white-space: pre-line; /* Preserve line breaks */
+        max-height: auto; /* Set maximum height */
+        overflow-y: auto; /* Add scrollbar if content exceeds max height */
+        width: auto; /* Set width to half of the page */
     }
     .message-box p {
-        margin: 5px 0; /* Add spacing between messages */
+        margin: 0; /* Remove margin */
     }
 </style>
-
-
 
 
 

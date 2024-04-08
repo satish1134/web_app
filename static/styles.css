@@ -95,3 +95,23 @@ body {
     background-attachment: fixed;
     color: #333;
 }
+
+/* Latest Update Heading Style */
+.latest-update-heading {
+    background-color: #ffffff; /* White background */
+    color: #212121; /* Dark text color */
+    padding: 10px 20px; /* Padding */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+/* Latest Update Section */
+.latest-update {
+    background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-top: 20px;
+    color: #5f0c0c; /* Set text color to white */
+    text-align: right; /* Align text to the right */
+}
