@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline'; style-src 'self' https: 'unsafe-inline';" />
+        
+        <title>DNA Dashboard</title>
+
+        <!-- Preload critical resources -->
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" />
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" as="style" />
+
+        <!-- Stylesheets -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    </head>
+    <body style="background-image: url('{{ url_for('static', filename='image/background.jpg') }}');">
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
+                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mt-4">
+            <!-- Disclaimer Alert -->
+            <div class="alert alert-warning" role="alert"><i class="fas fa-info-circle"></i> Disclaimer: The data shown in this dashboard is refreshed only when you manually reload the page or click the "Refresh Data" button below.</div>
+
+            <!-- Controls Section -->
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="subjectAreaDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
+                            Select Subject Areas
+                        </button>
+                        <ul class="dropdown-menu w-100 p-3" aria-labelledby="subjectAreaDropdown">
+                            <li>
+                                <div class="form-check">
+                                    <input class="form-check-input subject-area-checkbox" type="checkbox" value="all" id="selectAll" />
+                                    <label class="form-check-label" for="selectAll">
+                                        Select All
+                                    </label>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            {% for subject_area, data in grouped_data.items() %}
+                            <li>
+                                <div class="form-check">
+                                    <input class="form-check-input subject-area-checkbox" type="checkbox" value="{{ subject_area }}" id="check_{{ subject_area|replace(' ', '_') }}" />
+                                    <label class="form-check-label" for="check_{{ subject_area|replace(' ', '_') }}">
+                                        {{ subject_area }}
+                                    </label>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <button class="btn btn-primary" id="refreshDataButton"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="row">
+                {% for subject_area, data in grouped_data.items() %}
+                <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <strong>{{ subject_area }} ({{ grouped_data[subject_area] | length }})</strong>
+                            </h5>
+
+                            <!-- Status Buttons -->
+                            <button class="btn btn-warning btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'yet_to_start')" aria-label="Show yet to start items for {{ subject_area }}">
+                                <i class="fas fa-clock"></i> Yet to Start: {{ data | selectattr('status', 'equalto', 'yet_to_start') | list | length }}
+                            </button>
+
+                            <button class="btn btn-success btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'success')" aria-label="Show successful items for {{ subject_area }}">
+                                <i class="fas fa-check-circle"></i> Success: {{ data | selectattr('status', 'equalto', 'success') | list | length }}
+                            </button>
+
+                            <button class="btn btn-danger btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'failed')" aria-label="Show failed items for {{ subject_area }}">
+                                <i class="fas fa-times-circle"></i> Failed: {{ data | selectattr('status', 'equalto', 'failed') | list | length }}
+                            </button>
+
+                            <button class="btn btn-primary btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'running')" aria-label="Show running items for {{ subject_area }}">
+                                <i class="fas fa-play-circle"></i> Running: {{ data | selectattr('status', 'equalto', 'running') | list | length }}
+                            </button>
+
+                            <p class="card-text mt-2">
+                                <small class="text-muted">
+                                    Last Modified: {{ data[0]['modified_ts'] }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+
+        <!-- Popup Modal -->
+        <div id="popup" class="modal-overlay" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h2 id="modalTitle" class="popup-title">Status Details</h2>
+                    <button id="closePopup" class="close-button" aria-label="Close">&times;</button>
+                </div>
+                <div id="popupContent" class="popup-body"></div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js" defer></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js" defer></script>
+        <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    </body>
+</html>
