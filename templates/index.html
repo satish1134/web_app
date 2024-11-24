@@ -1,364 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Subject Areas</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="/static/styles.css">
-  <!-- Include jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-  <!-- Include Bootstrap's JavaScript -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-  <style>
-    /* Add custom styles */
-    /* Make space between navbar and subject area box */
-    .container {
-      margin-top: 20px; /* Adjust the margin-top as needed */
-    }
-    /* Center the button inside the subject area box */
-    .open-popup {
-      margin: 0 auto; /* Center the button */
-      display: block; /* Make it a block element */
-    }
-    /* Green color for success */
-    .success {
-      background-color: #00c851 !important; /* Green color */
-    }
-    /* Red color for failure */
-    .failed {
-      background-color: #ff4444 !important; /* Red color */
-    }
-    /* Yellow color for running */
-    .running {
-      background-color: #ffd600 !important; /* Yellow color */
-    }
-    /* Increase table border thickness */
-    .table-bordered {
-      border: 3px solid black !important; /* Adjust the thickness as needed */
-    }
-    /* Soft UI Design */
-    .card {
-      background-color: #f0f3f5;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    .latest-update {
-      background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-      padding: 20px;
-      margin-top: 20px;
-      color: #ffffff; /* Set text color to white */
-    }
-    /* Soft UI colors for navbar */
-    .navbar {
-      background: linear-gradient(145deg, #1c1c1c, #3a3a3a);
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-    .navbar-nav .nav-link {
-      color: #ffffff; /* Set text color to white */
-      transition: color 0.3s ease; /* Smooth color transition */
-    }
-    .navbar-nav .nav-link:hover {
-      color: #cccccc; /* Change the text color on hover */
-    }
-  </style>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline'; style-src 'self' https: 'unsafe-inline'; img-src 'self' https: data:;">
+    
+    <title>Dashboard</title>
+    
+    <!-- Stylesheets -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
-    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
-        </li>
-        <!-- Login -->
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<!-- Subject Area Dropdown -->
-<div class="container mt-3">
-  <label for="subjectAreaDropdown" class="form-label">Select Subject Area:</label>
-  <select class="form-select" id="subjectAreaDropdown" onchange="filterSubjectArea()">
-    <option value="choose" selected>Choose Subject Area</option>
-    <option value="all">All</option>
-    {% for subject_area, data in grouped_data.items() %}
-    <option value="{{ subject_area }}">{{ subject_area }}</option>
-    {% endfor %}
-  </select>
-</div>
-
-<!-- Main content area -->
-<div class="container">
-  <div class="row">
-    <!-- Loop through subject areas and display cards -->
-    {% for subject_area, data in grouped_data.items() %}
-    <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}" style="display: none;">
-      <!-- Subject Area Card -->
-      <div class="card mb-4 {% if 'running' in data_status[subject_area] %} running {% elif data_status[subject_area] == 'failed' %} failed {% elif data_status[subject_area] == 'success' %} success {% endif %}">
-        <div class="card-body">
-          <h5 class="card-title"><strong>{{ subject_area }} ({{ grouped_data[subject_area] | length }})</strong></h5> <!-- Display subject area name with total number of DAGs -->
-          <!-- Button for Success DAGs -->
-          <button class="btn btn-success btn-icon"><i class="fas fa-check-circle"></i> Success: {{ data | selectattr('STATUS', 'equalto', 'success') | list | length }}</button>
-          <!-- Button for Failed DAGs -->
-          <button class="btn btn-danger btn-icon"><i class="fas fa-times-circle"></i> Failed: {{ data | selectattr('STATUS', 'equalto', 'failed') | list | length }}</button>
-          <!-- Button for Running DAGs -->
-          <button class="btn btn-primary btn-icon"><i class="fas fa-play-circle"></i> Running: {{ data | selectattr('STATUS', 'equalto', 'running') | list | length }}</button>
-          <p class="card-text">Last Modified: {{ data[0]['MODIFIED_TS'] }}</p>
-          <!-- Button to launch popup -->
-          <button class="btn btn-primary open-popup" onclick="showDagStatus('{{ subject_area }}')"><i class="fas fa-chevron-right"></i></button>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-
-
-
-
-
-
-
-<!-- Latest Update Section -->
-<div class="container mt-5">
-    <h2 class="latest-update-heading">Latest Update</h2>
-    <div class="latest-update">
-        <!-- Read latest update from file and display here -->
-        <div class="message-box">
-            {% for update in latest_updates %}
-                {% set update_list = update.split(',') %}
-                {% for item in update_list %}
-                    <p>{{ item }}</p>
-                {% endfor %}
-            {% endfor %}
+<body style="background-image: url('{{ url_for('static', filename='image/background.jpg') }}');">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-</div>
 
-<style>
-    /* Add custom styles */
-    /* Latest Update Section */
-    .latest-update {
-        background: none;
-        border-radius: 0px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-        padding: 20px;
-        margin-top: 20px;
-        color: #ffffff; /* Set text color to white */
-        text-align: right; /* Align text to the right */
-    }
-    /* Message Box Style */
-    .message-box {
-        background-color: #23c32e; /* Light gray background */
-        border: 0px solid #346da6; /* Gray border */
-        border-radius: 20px; /* Rounded corners */
-        padding: 10px; /* Padding */
-        margin: auto; /* Center the box horizontally */
-        text-align: left; /* Align text to the left */
-        max-height: auto; /* Set maximum height */
-        overflow-y: auto; /* Add scrollbar if content exceeds max height */
-        width: auto; /* Set width to half of the page */
-    }
-    .message-box p {
-        margin: 0; /* Remove margin */
-    }
-</style>
-
-
-
-<script>
-  var popupWindow;
-
-  function showDagStatus(subjectArea) {
-    fetch(`/dag_status?subject_area=${subjectArea}`)
-      .then(response => response.text())
-      .then(data => {
-        // Open popup window maximized
-        popupWindow = window.open('', '_blank', 'fullscreen=yes');
-        popupWindow.document.write(data);
-        // Add home button for closing the popup window
-        popupWindow.document.write('<button onclick="window.close()">Home</button>');
-      })
-      .catch(error => console.error('Error:', error));
-  }
-
-  function closePopup() {
-    if (popupWindow) {
-      popupWindow.close();
-    }
-  }
-
-  function filterSubjectArea() {
-    var selectedSubjectArea = document.getElementById("subjectAreaDropdown").value;
-    var subjectAreaCards = document.getElementsByClassName("subject-area-card");
-
-    for (var i = 0; i < subjectAreaCards.length; i++) {
-      var card = subjectAreaCards[i];
-      if (card.getAttribute("data-subject-area") === selectedSubjectArea || selectedSubjectArea === "all") {
-        card.style.display = "block";
-      } else {
-        card.style.display = "none";
-      }
-    }
-  }
-</script>
-
-</body>
-</html>
-=======
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https: 'unsafe-inline'; style-src 'self' https: 'unsafe-inline';" />
-        
-        <title>DNA Dashboard</title>
-
-        <!-- Preload critical resources -->
-        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" />
-        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" as="style" />
-
-        <!-- Stylesheets -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
-    </head>
-    <body style="background-image: url('{{ url_for('static', filename='image/background.jpg') }}');">
-        <!-- Loading Indicator -->
-        <div id="loadingIndicator" class="d-none">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" 
+                    data-mdb-target="#navbarSupportedContent" 
+                    aria-controls="navbarSupportedContent" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                </ul>
             </div>
         </div>
+    </nav>
 
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/"><i class="fas fa-dna"></i> DNA DASHBOARD</a>
-                <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <!-- Disclaimer Alert -->
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-info-circle"></i> Disclaimer: The data shown in this dashboard is refreshed only when you manually reload the page or click the "Refresh Data" button below.
+        </div>
+
+        <!-- Controls Section -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="subjectAreaDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
+                        Select Subject Areas
+                    </button>
+                    <ul class="dropdown-menu w-100 p-3" aria-labelledby="subjectAreaDropdown">
+                        <li>
+                            <div class="form-check">
+                                <input class="form-check-input subject-area-checkbox" type="checkbox" value="all" id="selectAll">
+                                <label class="form-check-label" for="selectAll">
+                                    Select All
+                                </label>
+                            </div>
                         </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="container mt-4">
-            <!-- Disclaimer Alert -->
-            <div class="alert alert-warning" role="alert"><i class="fas fa-info-circle"></i> Disclaimer: The data shown in this dashboard is refreshed only when you manually reload the page or click the "Refresh Data" button below.</div>
-
-            <!-- Controls Section -->
-            <div class="row mb-3">
-                <div class="col-md-8">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="subjectAreaDropdown" data-mdb-toggle="dropdown" aria-expanded="false">
-                            Select Subject Areas
-                        </button>
-                        <ul class="dropdown-menu w-100 p-3" aria-labelledby="subjectAreaDropdown">
+                        <li><hr class="dropdown-divider"></li>
+                        {% for subject_area, data in grouped_data.items() %}
                             <li>
                                 <div class="form-check">
-                                    <input class="form-check-input subject-area-checkbox" type="checkbox" value="all" id="selectAll" />
-                                    <label class="form-check-label" for="selectAll">
-                                        Select All
-                                    </label>
-                                </div>
-                            </li>
-                            <li><hr class="dropdown-divider" /></li>
-                            {% for subject_area, data in grouped_data.items() %}
-                            <li>
-                                <div class="form-check">
-                                    <input class="form-check-input subject-area-checkbox" type="checkbox" value="{{ subject_area }}" id="check_{{ subject_area|replace(' ', '_') }}" />
+                                    <input class="form-check-input subject-area-checkbox" type="checkbox" value="{{ subject_area }}" id="check_{{ subject_area|replace(' ', '_') }}">
                                     <label class="form-check-label" for="check_{{ subject_area|replace(' ', '_') }}">
                                         {{ subject_area }}
                                     </label>
                                 </div>
                             </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-4 text-right">
-                    <button class="btn btn-primary" id="refreshDataButton"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-
-            <!-- Cards Grid -->
-            <div class="row">
-                {% for subject_area, data in grouped_data.items() %}
-                <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <strong>{{ subject_area }} ({{ grouped_data[subject_area] | length }})</strong>
-                            </h5>
-
-                            <!-- Status Buttons -->
-                            <button class="btn btn-warning btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'yet_to_start')" aria-label="Show yet to start items for {{ subject_area }}">
-                                <i class="fas fa-clock"></i> Yet to Start: {{ data | selectattr('status', 'equalto', 'yet_to_start') | list | length }}
-                            </button>
-
-                            <button class="btn btn-success btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'success')" aria-label="Show successful items for {{ subject_area }}">
-                                <i class="fas fa-check-circle"></i> Success: {{ data | selectattr('status', 'equalto', 'success') | list | length }}
-                            </button>
-
-                            <button class="btn btn-danger btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'failed')" aria-label="Show failed items for {{ subject_area }}">
-                                <i class="fas fa-times-circle"></i> Failed: {{ data | selectattr('status', 'equalto', 'failed') | list | length }}
-                            </button>
-
-                            <button class="btn btn-primary btn-icon show-status mb-2" onclick="showDagStatus('{{ subject_area }}', 'running')" aria-label="Show running items for {{ subject_area }}">
-                                <i class="fas fa-play-circle"></i> Running: {{ data | selectattr('status', 'equalto', 'running') | list | length }}
-                            </button>
-
-                            <p class="card-text mt-2">
-                                <small class="text-muted">
-                                    Last Modified: {{ data[0]['modified_ts'] }}
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </main>
-
-        <!-- Popup Modal -->
-        <div id="popup" class="modal-overlay" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
-            <div class="popup-content">
-                <div class="popup-header">
-                    <h2 id="modalTitle" class="popup-title">Status Details</h2>
-                    <button id="closePopup" class="close-button" aria-label="Close">&times;</button>
-                </div>
-                <div id="popupContent" class="popup-body"></div>
+            <div class="col-md-4 text-right">
+                <button class="btn btn-primary" id="refreshDataButton">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
             </div>
         </div>
 
-        <!-- Scripts -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js" defer></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js" defer></script>
-        <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-    </body>
+        <!-- Cards Grid -->
+        <div class="row">
+            {% for subject_area, data in grouped_data.items() %}
+            <div class="col-md-4 subject-area-card" data-subject-area="{{ subject_area }}">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <strong>{{ subject_area }} ({{ grouped_data[subject_area] | length }})</strong>
+                        </h5>
+                        
+                        <!-- Status Buttons -->
+                        <button class="btn btn-warning btn-icon show-status mb-2" 
+                                onclick="showDagStatus('{{ subject_area }}', 'yet_to_start')"
+                                aria-label="Show yet to start items for {{ subject_area }}">
+                            <i class="fas fa-clock"></i> Yet to Start: 
+                            {{ data | selectattr('status', 'equalto', 'yet_to_start') | list | length }}
+                        </button>
+
+                        <button class="btn btn-success btn-icon show-status mb-2" 
+                                onclick="showDagStatus('{{ subject_area }}', 'success')"
+                                aria-label="Show successful items for {{ subject_area }}">
+                            <i class="fas fa-check-circle"></i> Success: 
+                            {{ data | selectattr('status', 'equalto', 'success') | list | length }}
+                        </button>
+
+                        <button class="btn btn-danger btn-icon show-status mb-2" 
+                                onclick="showDagStatus('{{ subject_area }}', 'failed')"
+                                aria-label="Show failed items for {{ subject_area }}">
+                            <i class="fas fa-times-circle"></i> Failed: 
+                            {{ data | selectattr('status', 'equalto', 'failed') | list | length }}
+                        </button>
+
+                        <button class="btn btn-primary btn-icon show-status mb-2" 
+                                onclick="showDagStatus('{{ subject_area }}', 'running')"
+                                aria-label="Show running items for {{ subject_area }}">
+                            <i class="fas fa-play-circle"></i> Running: 
+                            {{ data | selectattr('status', 'equalto', 'running') | list | length }}
+                        </button>
+                        
+                        <p class="card-text mt-2">
+                            <small class="text-muted">
+                                Last Modified: {{ data[0]['modified_ts'] }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="modal-overlay" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 id="modalTitle" class="popup-title">Status Details</h2>
+                <button id="closePopup" class="close-button" aria-label="Close">&times;</button>
+            </div>
+            <div id="popupContent" class="popup-body"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js" defer></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.6.0/mdb.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
 </html>
->>>>>>> master
