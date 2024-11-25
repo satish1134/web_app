@@ -1,3 +1,25 @@
+// Add this near the top of your file, after the Logger definition
+function sanitizeHTML(str) {
+    if (str === null || str === undefined) {
+        return '';
+    }
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Add this URL validation function at the top with other utility functions
+function isValidUrl(url) {
+    try {
+        const parsedUrl = new URL(url);
+        // Only allow requests to your own domain
+        const currentDomain = window.location.hostname;
+        return parsedUrl.hostname === currentDomain;
+    } catch (e) {
+        return false;
+    }
+}
+
 // Global variables
 let loadingIndicator;
 let DEBUG = false; // Disable detailed logging in production
@@ -162,7 +184,7 @@ function showDagStatus(subjectArea, status) {
         if (!data || data.length === 0) {
             popupContent.innerHTML = `
                 <div class="alert alert-info">
-                    No data available for ${subjectArea} with status: ${status}
+                    No data available for ${sanitizeHTML(subjectArea)} with status: ${sanitizeHTML(status)}
                 </div>`;
             return;
         }
@@ -183,24 +205,17 @@ function showDagStatus(subjectArea, status) {
         `;
 
         data.forEach(item => {
-            const sanitize = (value) => {
-                if (window.DOMPurify) {
-                    return DOMPurify.sanitize(value || '');
-                }
-                return value || '';
-            };
-
             tableHTML += `
                 <tr>
-                    <td>${sanitize(item.dag_name)}</td>
+                    <td>${sanitizeHTML(item.dag_name)}</td>
                     <td>
                         <span class="badge badge-${getStatusBadgeClass(item.status)}">
-                            ${sanitize(item.status)}
+                            ${sanitizeHTML(item.status)}
                         </span>
                     </td>
-                    <td>${sanitize(item.dag_start_time)}</td>
-                    <td>${sanitize(item.dag_end_time)}</td>
-                    <td>${sanitize(item.modified_ts)}</td>
+                    <td>${sanitizeHTML(item.dag_start_time)}</td>
+                    <td>${sanitizeHTML(item.dag_end_time)}</td>
+                    <td>${sanitizeHTML(item.modified_ts)}</td>
                 </tr>
             `;
         });
@@ -211,14 +226,26 @@ function showDagStatus(subjectArea, status) {
     .catch(error => {
         hideLoading();
         Logger.error('Error in showDagStatus', error);
-        popupContent.innerHTML = `
-            <div class="alert alert-danger">
-                <h5>Error loading data</h5>
-                <p>${error.message}</p>
-                <p>Please try again or contact support if the problem persists.</p>
-            </div>
-        `;
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger';
+        
+        const heading = document.createElement('h5');
+        heading.textContent = 'Error loading data';
+        
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = error.message;
+        
+        const supportMessage = document.createElement('p');
+        supportMessage.textContent = 'Please try again or contact support if the problem persists.';
+        
+        errorDiv.appendChild(heading);
+        errorDiv.appendChild(errorMessage);
+        errorDiv.appendChild(supportMessage);
+        
+        popupContent.innerHTML = ''; // Clear existing content
+        popupContent.appendChild(errorDiv);
     });
+    
 }
 
 function getStatusBadgeClass(status) {
@@ -368,9 +395,23 @@ async function handleRefreshClick() {
     
     try {
         SessionManager.save('refreshType', 'button');
-        const response = await fetch(window.location.href);
         
-        if (!response.ok) throw new Error('Refresh failed');
+        // Add URL validation before fetch
+        const url = new URL('/', window.location.origin);
+        
+        const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/html',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'  // Ensure same-origin policy
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         window.location.reload();
     } catch (error) {
         Logger.error('Error refreshing data', error);

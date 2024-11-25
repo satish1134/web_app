@@ -25,7 +25,7 @@ def main():
     key = generate_secret_key()
     print("Secret key generated and saved to 'secret.key'.")
 
-    # Replace with your PostgreSQL credentials
+    # Replace with your DB credentials
     credentials = {
         "HOST": "",
         "PORT": "",
