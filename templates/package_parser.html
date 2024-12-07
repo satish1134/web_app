@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}:: Package Version ::{% endblock %}
+
+{% block content %}
+<!-- Main Container -->
+<div class="container-fluid mt-4" style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <div class="row">
+        <!-- Main Content Area -->
+        <div class="col-lg-8 col-md-12 mb-4">
+            <div class="content-wrapper">
+                <h1 class="mb-4 text-primary">
+                    <i class="fas fa-box"></i> Python Package Monitor
+                </h1>
+
+                <!-- Package Filter Section -->
+                <div class="package-filter mb-4">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input type="text" 
+                               id="packageSearch" 
+                               class="form-control form-control-lg" 
+                               placeholder="Search packages..."
+                               aria-label="Search packages">
+                    </div>
+                </div>
+
+                <!-- Package List -->
+                <div class="package-list">
+                    {% for package in packages|sort(attribute='last_update', reverse=True) %}
+                    <div class="package-card" data-package-name="{{ package.name }}">
+                        <div class="card mb-3 border-0 shadow-sm" style="background-color: #f8f9fa;">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h3 class="h5 mb-0">
+                                    <strong>{{ package.name }}</strong>
+                                    {% if package.has_update %}
+                                    <span class="badge badge-warning ml-2">Updated</span>
+                                    {% endif %}
+                                </h3>
+                                <a href="{{ package.link }}" 
+                                   target="_blank" 
+                                   class="btn btn-sm btn-primary"
+                                   rel="noopener noreferrer">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    PyPI
+                                </a>
+                            </div>
+                            
+                            <div class="card-body" style="background-color: #f8f9fa;">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="mb-2">
+                                            <i class="fas fa-code-branch text-primary"></i>
+                                            <strong>Version:</strong> 
+                                            <span class="package-version">{{ package.version }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="mb-2">
+                                            <i class="fas fa-clock text-primary"></i>
+                                            <strong>Updated:</strong>
+                                            <span class="timestamp" data-timestamp="{{ package.last_update }}">
+                                                {{ package.last_update }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="mb-0 mt-2">
+                                    <i class="fas fa-info-circle text-primary"></i>
+                                    <strong>Status:</strong> 
+                                    <span class="badge badge-{{ package.status|lower }}">
+                                        {{ package.status }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noPackagesFound" class="alert alert-info text-center" style="display: none;">
+                    <i class="fas fa-search"></i> No matching packages found
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Panel -->
+        <div class="col-lg-4 col-md-12">
+            <div class="notification-panel sticky-top" style="top: 20px;">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fas fa-bell"></i> Recent Updates
+                        </h4>
+                    </div>
+                    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                        <div id="notificationList">
+                            {% if notifications %}
+                                {% for notification in notifications %}
+                                <div class="alert alert-info alert-dismissible fade show mb-3">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>{{ notification.package_name }}</strong> 
+                                    was updated to version {{ notification.new_version }}
+                                    <small class="d-block text-muted mt-1">
+                                        {{ notification.update_time }}
+                                    </small>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No recent updates
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
